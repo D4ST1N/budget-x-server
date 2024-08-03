@@ -96,13 +96,14 @@ app.post("/auth/verify", async (req, res) => {
   const token = String(req.body.token);
 
   try {
-    await client.sessions.authenticate({
+    const response = await client.sessions.authenticate({
       session_token: token,
     });
 
     res.status(200).json({
       success: true,
       message: "Session token is valid",
+      user: response.user,
     });
   } catch (e) {
     res.status(400).json({

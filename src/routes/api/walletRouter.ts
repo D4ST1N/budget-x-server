@@ -1,22 +1,23 @@
 import express from "express";
 
 import {
+  createWallet,
+  createWalletInvitation,
+  deleteWallet,
+  deleteWalletUser,
+  getInvitationInfo,
+  getUserWallets,
+  getWalletUsers,
+  joinWallet,
+  updateWallet,
+} from "../../controllers/wallet";
+import {
   checkBodyUserId,
   checkInvitationToken,
   checkUserId,
   checkWalletData,
   checkWalletId,
 } from "../../middlewares";
-import {
-  createWallet,
-  createWalletInvitation,
-  deleteWallet,
-  getUserWallets,
-  getWalletUsers,
-  updateWallet,
-  joinWallet,
-  deleteWalletUser,
-} from "../../controllers/wallet";
 
 const walletRouter = express.Router();
 
@@ -29,6 +30,8 @@ walletRouter.patch("/:walletId", checkWalletData, checkWalletId, updateWallet);
 walletRouter.delete("/:walletId", checkWalletId, deleteWallet);
 
 walletRouter.post("/:walletId/invite", checkWalletId, createWalletInvitation);
+
+walletRouter.get("/join/:token", checkInvitationToken, getInvitationInfo);
 
 walletRouter.post(
   "/join/:token",

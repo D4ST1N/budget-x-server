@@ -15,4 +15,5 @@ export enum ErrorType {
   UserFetchError = "UserFetchError",
   InvitationCreationError = "InvitationCreationError",
   InvitationTokenNotProvided = "InvitationTokenNotProvided",
+  UserNotFound = "UserNotFound",
 }

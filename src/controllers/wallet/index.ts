@@ -6,3 +6,4 @@ export * from "./createWalletInvitation";
 export * from "./joinWallet";
 export * from "./getWalletUsers";
 export * from "./deleteWalletUser";
+export * from "./getInvitationInfo";

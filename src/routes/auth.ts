@@ -4,6 +4,7 @@ import stytch from "stytch";
 import { ErrorType } from "../types/ErrorType";
 
 import "dotenv/config";
+import axios from "axios";
 
 const authRouter = express.Router();
 export const client = new stytch.Client({
@@ -88,6 +89,20 @@ authRouter.get("/users", async (req, res) => {
       errorType: ErrorType.AuthorizationFailed,
       error,
     });
+  }
+});
+
+authRouter.get("/avatar", async (req, res) => {
+  const avatarUrl = req.query.url as string;
+
+  try {
+    const response = await axios.get(avatarUrl, {
+      responseType: "arraybuffer",
+    });
+    res.set("Content-Type", response.headers["content-type"]);
+    res.send(response.data);
+  } catch (error) {
+    res.status(500).send("Error fetching avatar");
   }
 });
 

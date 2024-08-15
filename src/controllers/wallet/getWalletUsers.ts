@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { ErrorType } from "../../types/ErrorType";
+
 import Wallet from "../../models/Wallet";
 import { client } from "../../routes/auth";
+import { ErrorType } from "../../types/ErrorType";
 
 export const getWalletUsers = async (req: Request, res: Response) => {
   const { walletId } = req.params;
@@ -26,7 +27,7 @@ export const getWalletUsers = async (req: Request, res: Response) => {
         operands: [
           {
             filter_name: "user_id",
-            filter_value: allowedUsers,
+            filter_value: allowedUsers.map(({ userId }) => userId),
           },
         ],
       },

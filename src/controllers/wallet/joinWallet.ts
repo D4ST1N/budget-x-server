@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { ErrorType } from "../../types/ErrorType";
+
 import Invitation from "../../models/Invitation";
 import Wallet from "../../models/Wallet";
+import { ErrorType } from "../../types/ErrorType";
 
 export const joinWallet = async (req: Request, res: Response) => {
   const { token } = req.params;
@@ -48,7 +49,10 @@ export const joinWallet = async (req: Request, res: Response) => {
   }
 
   if (!wallet.allowedUsers.includes(userId) && userId !== wallet.creator) {
-    wallet.allowedUsers.push(userId);
+    wallet.allowedUsers.push({
+      userId,
+      accessLevels: invitation.accessLevels,
+    });
     invitation.uses += 1;
   }
 

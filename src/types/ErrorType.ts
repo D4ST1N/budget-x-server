@@ -1,5 +1,8 @@
 export enum ErrorType {
   UserIdNotProvided = "UserIdNotProvided",
+  UserOrWalletIdNotProvided = "UserOrWalletIdNotProvided",
+  AccessDenied = "AccessDenied",
+  AccessCheckFailed = "AccessCheckFailed",
   WalletIdNotProvided = "WalletIdNotProvided",
   NoTokenProvided = "NoTokenProvided",
   AuthorizationFailed = "AuthorizationFailed",
@@ -16,4 +19,5 @@ export enum ErrorType {
   InvitationCreationError = "InvitationCreationError",
   InvitationTokenNotProvided = "InvitationTokenNotProvided",
   UserNotFound = "UserNotFound",
+  UserNotInWallet = "UserNotInWallet",
 }

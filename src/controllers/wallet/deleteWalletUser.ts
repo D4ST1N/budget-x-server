@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { ErrorType } from "../../types/ErrorType";
+
 import Wallet from "../../models/Wallet";
+import { ErrorType } from "../../types/ErrorType";
 
 export const deleteWalletUser = async (req: Request, res: Response) => {
   try {
@@ -17,7 +18,7 @@ export const deleteWalletUser = async (req: Request, res: Response) => {
     }
 
     wallet.allowedUsers = wallet.allowedUsers.filter(
-      (allowedUserId) => allowedUserId !== userId
+      (allowedUser) => allowedUser.userId !== userId
     );
 
     await wallet.save();

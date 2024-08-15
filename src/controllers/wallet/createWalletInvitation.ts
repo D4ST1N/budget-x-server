@@ -1,12 +1,18 @@
 import crypto from "crypto";
 import { Request, Response } from "express";
-import { ErrorType } from "../../types/ErrorType";
-import Invitation from "../../models/Invitation";
 import mongoose from "mongoose";
+
+import Invitation from "../../models/Invitation";
+import { AccessLevel } from "../../models/Wallet";
+import { ErrorType } from "../../types/ErrorType";
 
 export const createWalletInvitation = async (req: Request, res: Response) => {
   const { walletId } = req.params;
-  const { maxUses = 1, expiresIn = 2 * 60 * 60 * 1000 } = req.body;
+  const {
+    maxUses = 1,
+    expiresIn = 2 * 60 * 60 * 1000,
+    accessLevels = [AccessLevel.View],
+  } = req.body;
   const token = crypto.randomBytes(20).toString("hex");
   const expires = new Date(Date.now() + expiresIn);
 
@@ -16,6 +22,7 @@ export const createWalletInvitation = async (req: Request, res: Response) => {
       token,
       maxUses,
       expires,
+      accessLevels,
     });
 
     await invitation.save();

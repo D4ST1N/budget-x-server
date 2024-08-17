@@ -2,7 +2,6 @@ import cors from "cors";
 import express from "express";
 
 import connection from "./db/connection";
-import categoryRouter from "./routes/api/category";
 import walletRouter from "./routes/api/walletRouter";
 import authRouter from "./routes/auth";
 
@@ -24,7 +23,6 @@ app.use(
 app.use(express.json());
 
 app.use("/api/wallet", walletRouter);
-app.use("/api/category", categoryRouter);
 app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {

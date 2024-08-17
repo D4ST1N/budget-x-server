@@ -20,4 +20,9 @@ export enum ErrorType {
   InvitationTokenNotProvided = "InvitationTokenNotProvided",
   UserNotFound = "UserNotFound",
   UserNotInWallet = "UserNotInWallet",
+  CategoryCreationError = "CategoryCreationError",
+  ParentCategoryNotFound = "ParentCategoryNotFound",
+  CategoryNotFound = "CategoryNotFound",
+  CategoryEditError = "CategoryEditError",
+  CategoryDeleteError = "CategoryDeleteError",
 }

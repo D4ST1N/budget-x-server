@@ -1,6 +1,12 @@
 import express from "express";
 
 import {
+  createCategory,
+  deleteCategory,
+  editCategory,
+  getCategories,
+} from "../../controllers/category";
+import {
   createWallet,
   createWalletInvitation,
   deleteWallet,
@@ -80,6 +86,34 @@ walletRouter.delete(
   checkUserId,
   checkWalletAccess([AccessLevel.DeleteUsers]),
   deleteWalletUser
+);
+
+walletRouter.get(
+  "/:walletId/category",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.View]),
+  getCategories
+);
+
+walletRouter.post(
+  "/:walletId/category",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.AddCategories]),
+  createCategory
+);
+
+walletRouter.patch(
+  "/:walletId/category/:categoryId",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.AddCategories]),
+  editCategory
+);
+
+walletRouter.delete(
+  "/:walletId/category/:categoryId",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.DeleteCategories]),
+  deleteCategory
 );
 
 export default walletRouter;

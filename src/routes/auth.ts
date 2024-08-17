@@ -78,7 +78,6 @@ authRouter.get("/users", async (req, res) => {
     const response = await client.users.search({
       query: { operator: "OR", operands: [] },
     });
-    console.log(response);
     res.status(200).json({
       success: true,
       user: response.results,

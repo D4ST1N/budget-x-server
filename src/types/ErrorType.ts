@@ -25,4 +25,8 @@ export enum ErrorType {
   CategoryNotFound = "CategoryNotFound",
   CategoryEditError = "CategoryEditError",
   CategoryDeleteError = "CategoryDeleteError",
+  TagCreationError = "TagCreationError",
+  TagNotFound = "TagNotFound",
+  TagUpdateError = "TagUpdateError",
+  TagDeleteError = "TagDeleteError",
 }

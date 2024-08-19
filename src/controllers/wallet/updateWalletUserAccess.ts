@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import Wallet, { IAllowedUser } from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
 
-export const editWalletUserAccess = async (req: Request, res: Response) => {
+export const updateWalletUserAccess = async (req: Request, res: Response) => {
   const { walletId, userId } = req.params;
   const accessLevels = req.body;
 

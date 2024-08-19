@@ -3,12 +3,13 @@ import mongoose, { Document, Schema } from "mongoose";
 export enum AccessLevel {
   View = "View",
   Edit = "Edit",
-  AddCategories = "AddCategories",
-  AddExpenses = "AddExpenses",
-  DeleteCategories = "DeleteCategories",
   Delete = "Delete",
+  AddCategories = "AddCategories",
+  DeleteCategories = "DeleteCategories",
   ShareWallet = "ShareWallet",
   DeleteUsers = "DeleteUsers",
+  ManageTags = "ManageTags",
+  AddExpenses = "AddExpenses",
 }
 
 export interface IAllowedUser {

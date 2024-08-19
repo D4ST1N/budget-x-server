@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import Category, { CreateCategoryDTO } from "../../models/Category";
 import { ErrorType } from "../../types/ErrorType";
 
-export const editCategory = async (req: Request, res: Response) => {
+export const updateCategory = async (req: Request, res: Response) => {
   const { categoryId } = req.params;
   const { name, parentCategory }: CreateCategoryDTO = req.body;
 

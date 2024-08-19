@@ -3,15 +3,21 @@ import express from "express";
 import {
   createCategory,
   deleteCategory,
-  editCategory,
+  updateCategory,
   getCategories,
 } from "../../controllers/category";
+import {
+  createTag,
+  deleteTag,
+  getTags,
+  updateTag,
+} from "../../controllers/tags";
 import {
   createWallet,
   createWalletInvitation,
   deleteWallet,
   deleteWalletUser,
-  editWalletUserAccess,
+  updateWalletUserAccess,
   getInvitationInfo,
   getUserWallets,
   getWalletUsers,
@@ -77,7 +83,7 @@ walletRouter.patch(
   checkWalletId,
   checkUserId,
   checkWalletAccess([AccessLevel.Edit]),
-  editWalletUserAccess
+  updateWalletUserAccess
 );
 
 walletRouter.delete(
@@ -106,7 +112,7 @@ walletRouter.patch(
   "/:walletId/category/:categoryId",
   checkWalletId,
   checkWalletAccess([AccessLevel.AddCategories]),
-  editCategory
+  updateCategory
 );
 
 walletRouter.delete(
@@ -114,6 +120,34 @@ walletRouter.delete(
   checkWalletId,
   checkWalletAccess([AccessLevel.DeleteCategories]),
   deleteCategory
+);
+
+walletRouter.get(
+  "/:walletId/tag",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.View]),
+  getTags
+);
+
+walletRouter.post(
+  "/:walletId/tag",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.ManageTags]),
+  createTag
+);
+
+walletRouter.patch(
+  "/:walletId/tag/:tagId",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.ManageTags]),
+  updateTag
+);
+
+walletRouter.delete(
+  "/:walletId/tag/:tagId",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.ManageTags]),
+  deleteTag
 );
 
 export default walletRouter;

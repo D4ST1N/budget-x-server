@@ -7,7 +7,6 @@ export interface ITag extends Document {
 
 export interface CreateTagDTO {
   name: string;
-  parentCategory?: string;
 }
 
 const TagSchema = new Schema<ITag>({

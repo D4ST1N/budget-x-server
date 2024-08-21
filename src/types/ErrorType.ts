@@ -29,4 +29,9 @@ export enum ErrorType {
   TagNotFound = "TagNotFound",
   TagUpdateError = "TagUpdateError",
   TagDeleteError = "TagDeleteError",
+  ExpenseCreationError = "ExpenseCreationError",
+  ExpenseNotFound = "ExpenseNotFound",
+  ExpenseUpdateError = "ExpenseUpdateError",
+  ExpenseDeletionError = "ExpenseDeletionError",
+  ExpenseFetchError = "ExpenseFetchError",
 }

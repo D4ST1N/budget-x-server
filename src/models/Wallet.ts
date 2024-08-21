@@ -2,14 +2,20 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export enum AccessLevel {
   View = "View",
-  Edit = "Edit",
+  Update = "Update",
   Delete = "Delete",
-  AddCategories = "AddCategories",
-  DeleteCategories = "DeleteCategories",
-  ShareWallet = "ShareWallet",
-  DeleteUsers = "DeleteUsers",
-  ManageTags = "ManageTags",
-  AddExpenses = "AddExpenses",
+  CreateCategory = "CreateCategory",
+  UpdateCategory = "UpdateCategory",
+  DeleteCategory = "DeleteCategory",
+  AddUser = "AddUser",
+  UpdateUser = "UpdateUser",
+  DeleteUser = "DeleteUser",
+  CreateTag = "CreateTag",
+  UpdateTag = "UpdateTag",
+  DeleteTag = "DeleteTag",
+  CreateExpense = "CreateExpense",
+  UpdateExpense = "UpdateExpense",
+  DeleteExpense = "DeleteExpense",
 }
 
 export interface IAllowedUser {

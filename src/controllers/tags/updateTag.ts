@@ -1,5 +1,6 @@
-import Tag, { CreateTagDTO } from "../../models/Tag";
 import { Request, Response } from "express";
+
+import Tag, { CreateTagDTO } from "../../models/Tag";
 import { ErrorType } from "../../types/ErrorType";
 
 export const updateTag = async (req: Request, res: Response) => {
@@ -18,6 +19,7 @@ export const updateTag = async (req: Request, res: Response) => {
         success: false,
         errorType: ErrorType.TagNotFound,
       });
+      
       return;
     }
 

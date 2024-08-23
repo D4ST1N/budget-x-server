@@ -4,14 +4,17 @@ import Invitation from "../../models/Invitation";
 import Wallet from "../../models/Wallet";
 import { client } from "../../routes/auth";
 import { ErrorType } from "../../types/ErrorType";
+import { ErrorResponse, GetInvitationLinkResponse } from "../../types/Response";
 
-export const getInvitationInfo = async (req: Request, res: Response) => {
+export const getInvitationInfo = async (
+  req: Request,
+  res: Response<GetInvitationLinkResponse | ErrorResponse>
+) => {
   const { token } = req.params;
   const invitation = await Invitation.findOne({ token });
 
   if (!invitation) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.InvitationNotFound,
     });
 
@@ -21,8 +24,7 @@ export const getInvitationInfo = async (req: Request, res: Response) => {
   const wallet = await Wallet.findById(invitation.wallet);
 
   if (!wallet) {
-    res.status(200).send({
-      success: false,
+    res.status(500).send({
       errorType: ErrorType.WalletNotFound,
     });
 
@@ -43,8 +45,7 @@ export const getInvitationInfo = async (req: Request, res: Response) => {
   const [creator] = results;
 
   if (!creator) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.UserNotFound,
     });
 
@@ -52,7 +53,6 @@ export const getInvitationInfo = async (req: Request, res: Response) => {
   }
 
   res.status(200).json({
-    success: true,
     walletName: wallet.name,
     creator: {
       name: creator.name,

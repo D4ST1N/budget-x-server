@@ -3,8 +3,12 @@ import mongoose from "mongoose";
 
 import Tag, { CreateTagDTO } from "../../models/Tag";
 import { ErrorType } from "../../types/ErrorType";
+import { CreateTagResponse, ErrorResponse } from "../../types/Response";
 
-export const createTag = async (req: Request, res: Response) => {
+export const createTag = async (
+  req: Request,
+  res: Response<CreateTagResponse | ErrorResponse>
+) => {
   const { name }: CreateTagDTO = req.body;
   const { walletId } = req.params;
 
@@ -16,12 +20,10 @@ export const createTag = async (req: Request, res: Response) => {
     const savedTag = await newTag.save();
 
     res.status(200).json({
-      success: true,
       tag: savedTag,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.TagCreationError,
       error,
     });

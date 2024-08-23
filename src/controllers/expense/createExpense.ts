@@ -2,8 +2,12 @@ import { Request, Response } from "express";
 
 import Expense, { CreateExpenseDTO } from "../../models/Expense";
 import { ErrorType } from "../../types/ErrorType";
+import { CreateExpenseResponse, ErrorResponse } from "../../types/Response";
 
-export const createExpense = async (req: Request, res: Response) => {
+export const createExpense = async (
+  req: Request,
+  res: Response<CreateExpenseResponse | ErrorResponse>
+) => {
   const { categoryId, tagIds, amount, date }: CreateExpenseDTO = req.body;
   const { walletId } = req.params;
 
@@ -19,12 +23,10 @@ export const createExpense = async (req: Request, res: Response) => {
     const savedExpense = await expense.save();
 
     res.status(200).json({
-      success: true,
       expense: savedExpense,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.ExpenseCreationError,
       error,
     });

@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
-import { ErrorType } from "../../types/ErrorType";
-import Wallet from "../../models/Wallet";
 
-export const createWallet = async (req: Request, res: Response) => {
+import Wallet from "../../models/Wallet";
+import { ErrorType } from "../../types/ErrorType";
+import { CreateWalletResponse, ErrorResponse } from "../../types/Response";
+
+export const createWallet = async (
+  req: Request,
+  res: Response<CreateWalletResponse | ErrorResponse>
+) => {
   const walletData = req.body;
 
   const existedWallet = await Wallet.findOne({
@@ -11,8 +16,7 @@ export const createWallet = async (req: Request, res: Response) => {
   });
 
   if (existedWallet) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.WalletExists,
     });
 
@@ -25,12 +29,10 @@ export const createWallet = async (req: Request, res: Response) => {
     const createdWallet = await wallet.save();
 
     res.status(200).json({
-      success: true,
-      walletId: createdWallet._id,
+      wallet: createdWallet,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.WalletCreationError,
       error,
     });

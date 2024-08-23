@@ -2,8 +2,12 @@ import { Request, Response } from "express";
 
 import Category, { CreateCategoryDTO } from "../../models/Category";
 import { ErrorType } from "../../types/ErrorType";
+import { ErrorResponse, UpdateCategoryResponse } from "../../types/Response";
 
-export const updateCategory = async (req: Request, res: Response) => {
+export const updateCategory = async (
+  req: Request,
+  res: Response<UpdateCategoryResponse | ErrorResponse>
+) => {
   const { categoryId } = req.params;
   const { name, parentCategory }: CreateCategoryDTO = req.body;
 
@@ -15,8 +19,7 @@ export const updateCategory = async (req: Request, res: Response) => {
     );
 
     if (!category) {
-      res.status(200).json({
-        success: false,
+      res.status(500).json({
         errorType: ErrorType.CategoryNotFound,
       });
 
@@ -24,12 +27,10 @@ export const updateCategory = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      success: true,
       category,
     });
   } catch (error) {
-    res.status(200).send({
-      success: false,
+    res.status(500).send({
       errorType: ErrorType.CategoryEditError,
       error,
     });

@@ -2,15 +2,18 @@ import { Request, Response } from "express";
 
 import Wallet from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
+import { DeleteWalletUserResponse, ErrorResponse } from "../../types/Response";
 
-export const deleteWalletUser = async (req: Request, res: Response) => {
+export const deleteWalletUser = async (
+  req: Request,
+  res: Response<DeleteWalletUserResponse | ErrorResponse>
+) => {
   try {
     const { walletId, userId } = req.params;
     const wallet = await Wallet.findOne({ _id: walletId });
 
     if (!wallet) {
-      res.status(200).json({
-        success: false,
+      res.status(500).json({
         errorType: ErrorType.WalletNotFound,
       });
 
@@ -27,8 +30,7 @@ export const deleteWalletUser = async (req: Request, res: Response) => {
       success: true,
     });
   } catch (error) {
-    res.status(200).send({
-      success: false,
+    res.status(500).send({
       errorType: ErrorType.WalletDeletionError,
       error,
     });

@@ -3,8 +3,12 @@ import mongoose from "mongoose";
 
 import Category, { CreateCategoryDTO } from "../../models/Category";
 import { ErrorType } from "../../types/ErrorType";
+import { CreateCategoryResponse, ErrorResponse } from "../../types/Response";
 
-export const createCategory = async (req: Request, res: Response) => {
+export const createCategory = async (
+  req: Request,
+  res: Response<CreateCategoryResponse | ErrorResponse>
+) => {
   const { name, parentCategory }: CreateCategoryDTO = req.body;
   const { walletId } = req.params;
 
@@ -13,10 +17,10 @@ export const createCategory = async (req: Request, res: Response) => {
       const parentCategoryExists = await Category.findById(parentCategory);
 
       if (!parentCategoryExists) {
-        res.status(200).json({
-          success: false,
+        res.status(500).json({
           errorType: ErrorType.ParentCategoryNotFound,
         });
+
         return;
       }
     }
@@ -32,12 +36,10 @@ export const createCategory = async (req: Request, res: Response) => {
     const savedCategory = await newCategory.save();
 
     res.status(200).json({
-      success: true,
       category: savedCategory,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.CategoryCreationError,
       error,
     });

@@ -2,8 +2,12 @@ import { Request, Response } from "express";
 
 import Expense, { CreateExpenseDTO } from "../../models/Expense";
 import { ErrorType } from "../../types/ErrorType";
+import { ErrorResponse, UpdateExpenseResponse } from "../../types/Response";
 
-export const updateExpense = async (req: Request, res: Response) => {
+export const updateExpense = async (
+  req: Request,
+  res: Response<UpdateExpenseResponse | ErrorResponse>
+) => {
   const { expenseId } = req.params;
   const { categoryId, tagIds, amount, date }: CreateExpenseDTO = req.body;
 
@@ -15,8 +19,7 @@ export const updateExpense = async (req: Request, res: Response) => {
     );
 
     if (!updatedExpense) {
-      res.status(200).json({
-        success: false,
+      res.status(500).json({
         errorType: ErrorType.ExpenseNotFound,
       });
 
@@ -24,12 +27,10 @@ export const updateExpense = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      success: true,
       expense: updatedExpense,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.ExpenseUpdateError,
       error,
     });

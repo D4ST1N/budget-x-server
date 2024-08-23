@@ -5,37 +5,40 @@ import Category from "../../models/Category";
 import Expense from "../../models/Expense";
 import Tag from "../../models/Tag";
 import { ErrorType } from "../../types/ErrorType";
+import { ErrorResponse, GetExpensesResponse } from "../../types/Response";
 
 interface GetExpensesQuery {
-  month?: string;
-  year?: string;
+  startDate?: string;
+  endDate?: string;
   categories?: string;
   tags?: string;
 }
 
-export const getExpenses = async (req: Request, res: Response) => {
-  const { month, year, categories, tags }: GetExpensesQuery = req.query;
+export const getExpenses = async (
+  req: Request,
+  res: Response<GetExpensesResponse | ErrorResponse>
+) => {
+  const { startDate, endDate, categories, tags }: GetExpensesQuery = req.query;
   const { walletId } = req.params;
 
   try {
     const query: any = { walletId: new mongoose.Types.ObjectId(walletId) };
 
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
+    if (startDate && endDate) {
+      query.date = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    } else {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
 
-    query.date = {
-      $gte: new Date(
-        Number(year || currentYear),
-        Number(month || currentMonth),
-        1
-      ),
-      $lte: new Date(
-        Number(year || currentYear),
-        Number(month || currentMonth) + 1,
-        1
-      ),
-    };
+      query.date = {
+        $gte: new Date(currentYear, currentMonth, 1),
+        $lte: new Date(currentYear, currentMonth + 1, 1),
+      };
+    }
 
     if (categories) {
       const categoryIds = (categories as string)
@@ -60,14 +63,12 @@ export const getExpenses = async (req: Request, res: Response) => {
     const usedTags = await Tag.find({ _id: { $in: tagIds } });
 
     res.status(200).json({
-      success: true,
       expenses,
       categories: usedCategories,
       tags: usedTags,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.ExpenseFetchError,
       error,
     });

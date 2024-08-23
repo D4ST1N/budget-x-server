@@ -3,8 +3,12 @@ import mongoose from "mongoose";
 
 import Tag, { CreateTagDTO } from "../../models/Tag";
 import { ErrorType } from "../../types/ErrorType";
+import { CreateTagsBulkResponse, ErrorResponse } from "../../types/Response";
 
-export const createTagsBulk = async (req: Request, res: Response) => {
+export const createTagsBulk = async (
+  req: Request,
+  res: Response<CreateTagsBulkResponse | ErrorResponse>
+) => {
   const { tags }: { tags: CreateTagDTO[] } = req.body;
   const { walletId } = req.params;
 
@@ -17,12 +21,10 @@ export const createTagsBulk = async (req: Request, res: Response) => {
     const savedTags = await Tag.insertMany(tagsToSave);
 
     res.status(200).json({
-      success: true,
       tags: savedTags,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.TagCreationError,
       error,
     });

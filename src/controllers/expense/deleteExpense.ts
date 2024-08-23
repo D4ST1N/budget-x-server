@@ -2,16 +2,19 @@ import { Request, Response } from "express";
 
 import Expense from "../../models/Expense";
 import { ErrorType } from "../../types/ErrorType";
+import { DeleteExpenseResponse, ErrorResponse } from "../../types/Response";
 
-export const deleteExpense = async (req: Request, res: Response) => {
+export const deleteExpense = async (
+  req: Request,
+  res: Response<DeleteExpenseResponse | ErrorResponse>
+) => {
   const { expenseId } = req.params;
 
   try {
     const deletedTag = await Expense.findByIdAndDelete(expenseId);
 
     if (!deletedTag) {
-      res.status(200).json({
-        success: false,
+      res.status(500).json({
         errorType: ErrorType.ExpenseNotFound,
       });
 
@@ -22,8 +25,7 @@ export const deleteExpense = async (req: Request, res: Response) => {
       success: true,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.ExpenseDeletionError,
       error,
     });

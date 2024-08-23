@@ -1,10 +1,12 @@
+import axios from "axios";
 import express from "express";
 import stytch from "stytch";
 
 import { ErrorType } from "../types/ErrorType";
 
 import "dotenv/config";
-import axios from "axios";
+
+const threeDays = 60 * 24 * 3;
 
 const authRouter = express.Router();
 export const client = new stytch.Client({
@@ -27,7 +29,7 @@ authRouter.get("/", async (req, res) => {
     if (tokenType === "oauth") {
       const response = await client.oauth.authenticate({
         token,
-        session_duration_minutes: 240,
+        session_duration_minutes: threeDays,
       });
 
       res.redirect(
@@ -36,7 +38,7 @@ authRouter.get("/", async (req, res) => {
     } else if (tokenType === "magic_links") {
       const response = await client.magicLinks.authenticate({
         token,
-        session_duration_minutes: 240,
+        session_duration_minutes: threeDays,
       });
 
       res.redirect(

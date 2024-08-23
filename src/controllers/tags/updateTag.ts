@@ -2,8 +2,12 @@ import { Request, Response } from "express";
 
 import Tag, { CreateTagDTO } from "../../models/Tag";
 import { ErrorType } from "../../types/ErrorType";
+import { ErrorResponse, UpdateTagResponse } from "../../types/Response";
 
-export const updateTag = async (req: Request, res: Response) => {
+export const updateTag = async (
+  req: Request,
+  res: Response<UpdateTagResponse | ErrorResponse>
+) => {
   const { name }: CreateTagDTO = req.body;
   const { tagId } = req.params;
 
@@ -15,11 +19,10 @@ export const updateTag = async (req: Request, res: Response) => {
     );
 
     if (!tag) {
-      res.status(200).json({
-        success: false,
+      res.status(500).json({
         errorType: ErrorType.TagNotFound,
       });
-      
+
       return;
     }
 
@@ -28,12 +31,10 @@ export const updateTag = async (req: Request, res: Response) => {
     const savedTag = await tag.save();
 
     res.status(200).json({
-      success: true,
       tag: savedTag,
     });
   } catch (error) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.TagUpdateError,
       error,
     });

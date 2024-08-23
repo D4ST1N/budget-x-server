@@ -3,16 +3,19 @@ import { Request, Response } from "express";
 import Invitation from "../../models/Invitation";
 import Wallet from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
+import { ErrorResponse, JoinWallerResponse } from "../../types/Response";
 
-export const joinWallet = async (req: Request, res: Response) => {
+export const joinWallet = async (
+  req: Request,
+  res: Response<JoinWallerResponse | ErrorResponse>
+) => {
   const { token } = req.params;
   const { userId } = req.body;
 
   const invitation = await Invitation.findOne({ token });
 
   if (!invitation) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.InvitationNotFound,
     });
 
@@ -20,8 +23,7 @@ export const joinWallet = async (req: Request, res: Response) => {
   }
 
   if (invitation.expires < new Date(Date.now())) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.InvitationExpired,
     });
 
@@ -29,8 +31,7 @@ export const joinWallet = async (req: Request, res: Response) => {
   }
 
   if (invitation.uses >= invitation.maxUses) {
-    res.status(200).json({
-      success: false,
+    res.status(500).json({
       errorType: ErrorType.InvitationRunOut,
     });
 
@@ -40,8 +41,7 @@ export const joinWallet = async (req: Request, res: Response) => {
   const wallet = await Wallet.findById(invitation.wallet);
 
   if (!wallet) {
-    res.status(200).send({
-      success: false,
+    res.status(500).send({
       errorType: ErrorType.WalletNotFound,
     });
 

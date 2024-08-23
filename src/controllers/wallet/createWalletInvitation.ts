@@ -5,8 +5,15 @@ import mongoose from "mongoose";
 import Invitation from "../../models/Invitation";
 import { AccessLevel } from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
+import {
+  CreateWalletInvitationResponse,
+  ErrorResponse,
+} from "../../types/Response";
 
-export const createWalletInvitation = async (req: Request, res: Response) => {
+export const createWalletInvitation = async (
+  req: Request,
+  res: Response<CreateWalletInvitationResponse | ErrorResponse>
+) => {
   const { walletId } = req.params;
   const {
     maxUses = 1,
@@ -28,12 +35,10 @@ export const createWalletInvitation = async (req: Request, res: Response) => {
     await invitation.save();
 
     res.status(200).json({
-      success: true,
       token,
     });
   } catch (error) {
-    res.status(200).send({
-      success: false,
+    res.status(500).send({
       errorType: ErrorType.InvitationCreationError,
       error,
     });

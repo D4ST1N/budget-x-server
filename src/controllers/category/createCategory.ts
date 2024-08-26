@@ -13,6 +13,20 @@ export const createCategory = async (
   const { walletId } = req.params;
 
   try {
+    const existingCategory = await Category.findOne({
+      name,
+      walletId,
+      parentCategory: parentCategory || null,
+    });
+
+    if (existingCategory) {
+      res.status(500).json({
+        errorType: ErrorType.CategoryAlreadyExists,
+      });
+
+      return;
+    }
+
     if (parentCategory) {
       const parentCategoryExists = await Category.findById(parentCategory);
 

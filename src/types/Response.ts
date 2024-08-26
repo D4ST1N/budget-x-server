@@ -31,6 +31,10 @@ export interface DeleteWalletUserResponse {
   success: boolean;
 }
 
+export interface LeaveWalletResponse {
+  success: boolean;
+}
+
 export interface GetInvitationLinkResponse {
   walletName: string;
   creator: UserData;

@@ -28,6 +28,7 @@ import {
   getUserWallets,
   getWalletUsers,
   joinWallet,
+  leaveWallet,
   updateWallet,
   updateWalletUserAccess,
 } from "../../controllers/wallet";
@@ -99,6 +100,13 @@ walletRouter.delete(
   checkUserId,
   checkWalletAccess([AccessLevel.DeleteUser]),
   deleteWalletUser
+);
+
+walletRouter.get(
+  "/:walletId/leave",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.View]),
+  leaveWallet
 );
 
 walletRouter.get(

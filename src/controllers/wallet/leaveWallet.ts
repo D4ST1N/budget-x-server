@@ -2,14 +2,15 @@ import { Request, Response } from "express";
 
 import Wallet from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
-import { DeleteWalletUserResponse, ErrorResponse } from "../../types/Response";
+import { ErrorResponse, LeaveWalletResponse } from "../../types/Response";
 
-export const deleteWalletUser = async (
+export const leaveWallet = async (
   req: Request,
-  res: Response<DeleteWalletUserResponse | ErrorResponse>
+  res: Response<LeaveWalletResponse | ErrorResponse>
 ) => {
   try {
-    const { walletId, userId } = req.params;
+    const userId = req.headers["userid"] as string;
+    const { walletId } = req.params;
     const wallet = await Wallet.findOne({ _id: walletId });
 
     if (!wallet) {
@@ -31,7 +32,7 @@ export const deleteWalletUser = async (
     });
   } catch (error) {
     res.status(500).send({
-      errorType: ErrorType.WalletUserDeletionError,
+      errorType: ErrorType.WalletLeaveError,
       error,
     });
   }

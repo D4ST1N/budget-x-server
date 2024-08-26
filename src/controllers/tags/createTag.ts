@@ -13,6 +13,19 @@ export const createTag = async (
   const { walletId } = req.params;
 
   try {
+    const existingTag = await Tag.findOne({
+      name,
+      walletId,
+    });
+
+    if (existingTag) {
+      res.status(500).json({
+        errorType: ErrorType.TagAlreadyExists,
+      });
+
+      return;
+    }
+
     const newTag = new Tag({
       name,
       walletId: new mongoose.Types.ObjectId(walletId),

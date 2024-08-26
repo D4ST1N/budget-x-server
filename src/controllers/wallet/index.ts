@@ -8,3 +8,4 @@ export * from "./getWalletUsers";
 export * from "./deleteWalletUser";
 export * from "./getInvitationInfo";
 export * from "./updateWalletUserAccess";
+export * from "./leaveWallet";

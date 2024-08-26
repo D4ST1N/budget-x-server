@@ -34,4 +34,8 @@ export enum ErrorType {
   ExpenseUpdateError = "ExpenseUpdateError",
   ExpenseDeletionError = "ExpenseDeletionError",
   ExpenseFetchError = "ExpenseFetchError",
+  CategoryAlreadyExists = "CategoryAlreadyExists",
+  TagAlreadyExists = "TagAlreadyExists",
+  WalletUserDeletionError = "WalletUserDeletionError",
+  WalletLeaveError = "WalletLeaveError",
 }

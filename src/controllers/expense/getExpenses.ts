@@ -12,13 +12,15 @@ interface GetExpensesQuery {
   endDate?: string;
   categories?: string;
   tags?: string;
+  limit?: string;
 }
 
 export const getExpenses = async (
   req: Request,
   res: Response<GetExpensesResponse | ErrorResponse>
 ) => {
-  const { startDate, endDate, categories, tags }: GetExpensesQuery = req.query;
+  const { startDate, endDate, categories, tags, limit }: GetExpensesQuery =
+    req.query;
   const { walletId } = req.params;
 
   try {
@@ -54,17 +56,26 @@ export const getExpenses = async (
       query.tags = { $in: tagIds };
     }
 
-    const expenses = await Expense.find(query);
+    const expensesQuery = Expense.find(query);
+
+    if (limit) {
+      expensesQuery.limit(Number(limit));
+    }
+
+    const expenses = await expensesQuery.exec();
 
     const categoryIds = [...new Set(expenses.map((exp) => exp.categoryId))];
     const tagIds = [...new Set(expenses.flatMap((exp) => exp.tagIds))];
 
     const usedCategories = await Category.find({ _id: { $in: categoryIds } });
     const usedTags = await Tag.find({ _id: { $in: tagIds } });
+    const parentCategories = await Category.find({
+      _id: { $in: usedCategories.map((cat) => cat.parentCategory) },
+    });
 
     res.status(200).json({
       expenses,
-      categories: usedCategories,
+      categories: [...usedCategories, ...parentCategories],
       tags: usedTags,
     });
   } catch (error) {

@@ -8,7 +8,8 @@ export const createExpense = async (
   req: Request,
   res: Response<CreateExpenseResponse | ErrorResponse>
 ) => {
-  const { categoryId, tagIds, amount, date }: CreateExpenseDTO = req.body;
+  const { categoryId, tagIds, amount, date, isIncome }: CreateExpenseDTO =
+    req.body;
   const { walletId } = req.params;
 
   const expense = new Expense({
@@ -17,6 +18,7 @@ export const createExpense = async (
     tagIds,
     amount,
     date,
+    isIncome,
   });
 
   try {

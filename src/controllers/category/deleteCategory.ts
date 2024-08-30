@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import Category from "../../models/Category";
+import Expense from "../../models/Expense";
 import { ErrorType } from "../../types/ErrorType";
 import { DeleteCategoryResponse, ErrorResponse } from "../../types/Response";
 
@@ -11,14 +12,20 @@ export const deleteCategory = async (
   const { categoryId } = req.params;
 
   try {
+    const expenses = await Expense.find({ categoryId });
+
+    if (expenses.length > 0) {
+      return res.status(500).json({
+        errorType: ErrorType.CategoryHasExpenses,
+      });
+    }
+
     const category = await Category.findOneAndDelete({ _id: categoryId });
 
     if (!category) {
-      res.status(500).json({
+      return res.status(500).json({
         errorType: ErrorType.CategoryNotFound,
       });
-
-      return;
     }
 
     res.status(200).json({

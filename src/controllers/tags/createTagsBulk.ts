@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 
-import Tag, { CreateTagDTO } from "../../models/Tag";
+import Tag from "../../models/Tag";
 import { ErrorType } from "../../types/ErrorType";
 import { CreateTagsBulkResponse, ErrorResponse } from "../../types/Response";
 
@@ -9,19 +9,23 @@ export const createTagsBulk = async (
   req: Request,
   res: Response<CreateTagsBulkResponse | ErrorResponse>
 ) => {
-  const { tags }: { tags: CreateTagDTO[] } = req.body;
+  const { tags }: { tags: string[] } = req.body;
   const { walletId } = req.params;
 
   try {
-    const tagsToSave = tags.map((tag) => ({
-      name: tag.name,
+    const existingTags = await Tag.find({
       walletId: new mongoose.Types.ObjectId(walletId),
-    }));
-
-    const savedTags = await Tag.insertMany(tagsToSave);
+      name: { $in: tags },
+    });
+    const existingTagNames = existingTags.map((tag) => tag.name);
+    const newTagNames = tags.filter((name) => !existingTagNames.includes(name));
+    const createdTags = await Tag.insertMany(
+      newTagNames.map((name) => ({ name }))
+    );
 
     res.status(200).json({
-      tags: savedTags,
+      createdTags,
+      existingTags,
     });
   } catch (error) {
     res.status(500).json({

@@ -9,7 +9,9 @@ import {
 import {
   createExpense,
   deleteExpense,
+  deleteExpensesBulk,
   getExpenses,
+  transferExpenses,
   updateExpense,
 } from "../../controllers/expense";
 import {
@@ -137,6 +139,13 @@ walletRouter.delete(
   deleteCategory
 );
 
+walletRouter.delete(
+  "/:walletId/category/:categoryId/expense",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.DeleteExpense]),
+  deleteExpensesBulk
+);
+
 walletRouter.get(
   "/:walletId/tag",
   checkWalletId,
@@ -198,6 +207,13 @@ walletRouter.delete(
   checkWalletId,
   checkWalletAccess([AccessLevel.DeleteExpense]),
   deleteExpense
+);
+
+walletRouter.post(
+  "/:walletId/expense/transfer",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.UpdateExpense]),
+  transferExpenses
 );
 
 export default walletRouter;

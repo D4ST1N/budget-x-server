@@ -6,6 +6,7 @@ export interface IExpense extends Document {
   tagIds: mongoose.Types.ObjectId[];
   amount: number;
   date: Date;
+  isIncome: boolean;
 }
 
 export interface CreateExpenseDTO {
@@ -13,6 +14,7 @@ export interface CreateExpenseDTO {
   tagIds: string[];
   amount: number;
   date: Date;
+  isIncome: boolean;
 }
 
 const ExpenseSchema = new Schema<IExpense>({
@@ -31,6 +33,7 @@ const ExpenseSchema = new Schema<IExpense>({
   ],
   amount: { type: Number, required: true },
   date: { type: Date, default: Date.now, required: true },
+  isIncome: { type: Boolean, default: false },
 });
 
 const Expense = mongoose.model<IExpense>("Expense", ExpenseSchema);

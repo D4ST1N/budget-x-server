@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-import Wallet from "../models/Wallet";
-
 import "dotenv/config";
 
 const connectionString: string = process.env.MONGO_DB_CONNECTION_URL as string;

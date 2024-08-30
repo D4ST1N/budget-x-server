@@ -38,4 +38,10 @@ export enum ErrorType {
   TagAlreadyExists = "TagAlreadyExists",
   WalletUserDeletionError = "WalletUserDeletionError",
   WalletLeaveError = "WalletLeaveError",
+  ParentCategoryHasExpenses = "ParentCategoryHasExpenses",
+  ExpenseTransferError = "ExpenseTransferError",
+  SourceCategoryNotFound = "SourceCategoryNotFound",
+  TargetCategoryNotFound = "TargetCategoryNotFound",
+  CategoryHasExpenses = "CategoryHasExpenses",
+  ExpensesNotFound = "ExpensesNotFound",
 }

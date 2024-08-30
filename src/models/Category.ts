@@ -4,11 +4,13 @@ export interface ICategory extends Document {
   name: string;
   walletId: mongoose.Types.ObjectId;
   parentCategory?: mongoose.Types.ObjectId;
+  isIncomeCategory: boolean;
 }
 
 export interface CreateCategoryDTO {
   name: string;
   parentCategory?: string;
+  isIncomeCategory: boolean;
 }
 
 const CategorySchema = new Schema<ICategory>({
@@ -23,6 +25,7 @@ const CategorySchema = new Schema<ICategory>({
     ref: "Category",
     default: null,
   },
+  isIncomeCategory: { type: Boolean, default: false },
 });
 
 const Category = mongoose.model<ICategory>("Category", CategorySchema);

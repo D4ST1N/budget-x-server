@@ -80,6 +80,10 @@ export interface DeleteExpenseResponse {
   success: boolean;
 }
 
+export interface DeleteExpensesBulkResponse {
+  deletedCount: number;
+}
+
 export interface GetExpensesResponse {
   expenses: IExpense[];
   categories: ICategory[];
@@ -95,7 +99,8 @@ export interface CreateTagResponse {
 }
 
 export interface CreateTagsBulkResponse {
-  tags: ITag[];
+  createdTags: ITag[];
+  existingTags: ITag[];
 }
 
 export interface DeleteTagResponse {
@@ -108,4 +113,8 @@ export interface GetTagsResponse {
 
 export interface UpdateTagResponse {
   tag: ITag;
+}
+
+export interface TransferExpensesResponse {
+  expensesCount: number;
 }

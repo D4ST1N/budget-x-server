@@ -9,12 +9,13 @@ export const updateExpense = async (
   res: Response<UpdateExpenseResponse | ErrorResponse>
 ) => {
   const { expenseId } = req.params;
-  const { categoryId, tagIds, amount, date }: CreateExpenseDTO = req.body;
+  const { categoryId, tagIds, amount, date, isIncome }: CreateExpenseDTO =
+    req.body;
 
   try {
     const updatedExpense = await Expense.findByIdAndUpdate(
       expenseId,
-      { categoryId, tagIds, amount, date },
+      { categoryId, tagIds, amount, date, isIncome },
       { new: true }
     );
 

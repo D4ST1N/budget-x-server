@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import mongoose, { ObjectId } from "mongoose";
 
 import Category, { CreateCategoryDTO } from "../../models/Category";
 import Expense from "../../models/Expense";
@@ -17,10 +18,12 @@ export const updateCategory = async (
   }: CreateCategoryDTO = req.body;
 
   try {
+    const categoryIdToUpdate = new mongoose.Types.ObjectId(categoryId);
     const existingCategory = await Category.findOne({
       name,
       walletId,
       parentCategory: parentCategoryId || null,
+      _id: { $ne: categoryIdToUpdate },
     });
 
     if (existingCategory) {

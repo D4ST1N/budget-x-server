@@ -49,6 +49,7 @@ authRouter.get("/", async (req: Request, res: Response) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: week * 60 * 1000,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : undefined,
       });
 
       res.redirect(`${process.env.CLIENT_URL}`);

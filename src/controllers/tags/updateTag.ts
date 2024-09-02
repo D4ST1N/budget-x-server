@@ -19,11 +19,9 @@ export const updateTag = async (
     );
 
     if (!tag) {
-      res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.TagNotFound,
       });
-
-      return;
     }
 
     tag.name = name;

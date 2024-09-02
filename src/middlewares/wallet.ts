@@ -11,7 +11,7 @@ export const checkUserId = (
   const { userId } = req.params;
 
   if (!userId) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       errorType: ErrorType.UserIdNotProvided,
     });
@@ -28,7 +28,7 @@ export const checkBodyUserId = (
   const { userId } = req.body;
 
   if (!userId) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       errorType: ErrorType.UserIdNotProvided,
     });
@@ -45,7 +45,7 @@ export const checkWalletId = (
   const { walletId } = req.params;
 
   if (!walletId) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       errorType: ErrorType.WalletIdNotProvided,
     });
@@ -62,7 +62,7 @@ export const checkWalletData = (
   const walletData = req.body;
 
   if (!walletData) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       errorType: ErrorType.NoWalletData,
     });
@@ -79,7 +79,7 @@ export const checkInvitationToken = (
   const { token } = req.params;
 
   if (!token) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       errorType: ErrorType.InvitationTokenNotProvided,
     });
@@ -93,11 +93,11 @@ export const checkUserAccess = async (
   res: Response,
   next: NextFunction
 ): Promise<Response | void> => {
-  const userId = req.headers["userid"] as string;
+  const { userId } = req;
   const { walletId } = req.params;
 
   if (!userId) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       errorType: ErrorType.UserIdNotProvided,
     });
@@ -109,7 +109,7 @@ export const checkUserAccess = async (
     wallet.creator !== userId &&
     !wallet.allowedUsers.some((user) => user.userId !== userId)
   ) {
-    res.status(200).json({
+    res.status(403).json({
       success: false,
       errorType: ErrorType.AccessDenied,
     });
@@ -121,11 +121,11 @@ export const checkUserAccess = async (
 export const checkWalletAccess = (requiredAccessLevel: AccessLevel[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = req.headers["userid"] as string;
+      const { userId } = req;
       const { walletId } = req.params;
 
       if (!userId) {
-        res.status(200).json({
+        res.status(403).json({
           success: false,
           errorType: ErrorType.UserIdNotProvided,
         });
@@ -149,7 +149,7 @@ export const checkWalletAccess = (requiredAccessLevel: AccessLevel[]) => {
           userAccess.accessLevels.includes(level)
         )
       ) {
-        res.status(200).json({
+        res.status(403).json({
           success: false,
           errorType: ErrorType.AccessDenied,
         });
@@ -159,7 +159,7 @@ export const checkWalletAccess = (requiredAccessLevel: AccessLevel[]) => {
 
       next();
     } catch (error) {
-      res.status(200).json({
+      res.status(403).json({
         success: false,
         errorType: ErrorType.AccessCheckFailed,
         error,

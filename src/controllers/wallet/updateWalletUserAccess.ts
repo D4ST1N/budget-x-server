@@ -14,7 +14,7 @@ export const updateWalletUserAccess = async (
   const wallet = await Wallet.findOne({ _id: walletId });
 
   if (!wallet) {
-    res.status(500).json({
+    res.status(404).json({
       errorType: ErrorType.WalletNotFound,
     });
 
@@ -22,7 +22,7 @@ export const updateWalletUserAccess = async (
   }
 
   if (!wallet.allowedUsers.find((user) => user.userId === userId)) {
-    res.status(500).json({
+    res.status(404).json({
       errorType: ErrorType.UserNotInWallet,
     });
 

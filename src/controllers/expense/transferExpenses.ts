@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 
 import Category, { ICategory } from "../../models/Category";
 import Expense from "../../models/Expense";
 import { ErrorType } from "../../types/ErrorType";
 import { ErrorResponse, TransferExpensesResponse } from "../../types/Response";
-import mongoose from "mongoose";
 
 export const transferExpenses = async (
   req: Request,
@@ -18,7 +18,7 @@ export const transferExpenses = async (
     let targetCategoryId = "";
 
     if (!fromCategory) {
-      return res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.SourceCategoryNotFound,
       });
     }
@@ -36,11 +36,9 @@ export const transferExpenses = async (
       });
 
       if (existingCategory) {
-        res.status(500).json({
+        return res.status(409).json({
           errorType: ErrorType.CategoryAlreadyExists,
         });
-
-        return;
       }
 
       const newCategory = new Category({
@@ -56,7 +54,7 @@ export const transferExpenses = async (
       const toCategory = await Category.findById(toCategoryId);
 
       if (!toCategory) {
-        return res.status(500).json({
+        return res.status(404).json({
           errorType: ErrorType.TargetCategoryNotFound,
         });
       }

@@ -14,10 +14,9 @@ export const deleteExpensesBulk = async (
     const result = await Expense.deleteMany({ category: categoryId });
 
     if (result.deletedCount === 0) {
-      res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.ExpensesNotFound,
       });
-      return;
     }
 
     res.status(200).json({

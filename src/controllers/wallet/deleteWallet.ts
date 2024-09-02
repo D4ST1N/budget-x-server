@@ -13,7 +13,7 @@ export const deleteWallet = async (
     const result = await Wallet.deleteOne({ _id: walletId });
 
     if (result.deletedCount === 0) {
-      return res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.WalletNotFound,
       });
     }

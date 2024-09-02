@@ -9,12 +9,12 @@ export const leaveWallet = async (
   res: Response<LeaveWalletResponse | ErrorResponse>
 ) => {
   try {
-    const userId = req.headers["userid"] as string;
+    const { userId } = req;
     const { walletId } = req.params;
     const wallet = await Wallet.findOne({ _id: walletId });
 
     if (!wallet) {
-      res.status(500).json({
+      res.status(404).json({
         errorType: ErrorType.WalletNotFound,
       });
 

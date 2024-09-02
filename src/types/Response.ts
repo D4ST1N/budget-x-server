@@ -76,6 +76,10 @@ export interface CreateExpenseResponse {
   expense: IExpense;
 }
 
+export interface CreateExpensesResponse {
+  expenses: IExpense[];
+}
+
 export interface DeleteExpenseResponse {
   success: boolean;
 }

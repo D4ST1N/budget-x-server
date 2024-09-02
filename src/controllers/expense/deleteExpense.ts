@@ -14,11 +14,9 @@ export const deleteExpense = async (
     const deletedTag = await Expense.findByIdAndDelete(expenseId);
 
     if (!deletedTag) {
-      res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.ExpenseNotFound,
       });
-
-      return;
     }
 
     res.status(200).json({

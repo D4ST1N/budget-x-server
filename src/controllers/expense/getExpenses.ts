@@ -31,15 +31,6 @@ export const getExpenses = async (
         $gte: new Date(startDate),
         $lte: new Date(endDate),
       };
-    } else {
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth();
-
-      query.date = {
-        $gte: new Date(currentYear, currentMonth, 1),
-        $lte: new Date(currentYear, currentMonth + 1, 1),
-      };
     }
 
     if (categories) {
@@ -56,7 +47,7 @@ export const getExpenses = async (
       query.tags = { $in: tagIds };
     }
 
-    const expensesQuery = Expense.find(query);
+    const expensesQuery = Expense.find(query).sort({ date: -1 });
 
     if (limit) {
       expensesQuery.limit(Number(limit));

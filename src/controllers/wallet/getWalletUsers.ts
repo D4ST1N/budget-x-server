@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import Wallet from "../../models/Wallet";
-import { client } from "../../routes/auth";
+import { stytchClient } from "../../routes/auth";
 import { ErrorType } from "../../types/ErrorType";
 import { ErrorResponse, FetWalletUsersResponse } from "../../types/Response";
 
@@ -15,7 +15,7 @@ export const getWalletUsers = async (
     const wallet = await Wallet.findOne({ _id: walletId });
 
     if (!wallet) {
-      res.status(500).json({
+      res.status(404).json({
         errorType: ErrorType.WalletNotFound,
       });
 
@@ -24,7 +24,7 @@ export const getWalletUsers = async (
 
     const { allowedUsers } = wallet;
 
-    const { results } = await client.users.search({
+    const { results } = await stytchClient.users.search({
       query: {
         operator: "OR",
         operands: [

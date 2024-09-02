@@ -5,6 +5,7 @@ export enum ErrorType {
   AccessCheckFailed = "AccessCheckFailed",
   WalletIdNotProvided = "WalletIdNotProvided",
   NoTokenProvided = "NoTokenProvided",
+  InvalidToken = "InvalidToken",
   AuthorizationFailed = "AuthorizationFailed",
   NoWalletData = "NoWalletData",
   WalletFetchError = "WalletFetchError",

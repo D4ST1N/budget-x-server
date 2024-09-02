@@ -15,7 +15,7 @@ export const deleteCategory = async (
     const expenses = await Expense.find({ categoryId });
 
     if (expenses.length > 0) {
-      return res.status(500).json({
+      return res.status(400).json({
         errorType: ErrorType.CategoryHasExpenses,
       });
     }
@@ -23,7 +23,7 @@ export const deleteCategory = async (
     const category = await Category.findOneAndDelete({ _id: categoryId });
 
     if (!category) {
-      return res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.CategoryNotFound,
       });
     }

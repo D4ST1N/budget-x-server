@@ -20,7 +20,10 @@ export const createTagsBulk = async (
     const existingTagNames = existingTags.map((tag) => tag.name);
     const newTagNames = tags.filter((name) => !existingTagNames.includes(name));
     const createdTags = await Tag.insertMany(
-      newTagNames.map((name) => ({ name }))
+      newTagNames.map((name) => ({
+        name,
+        walletId: new mongoose.Types.ObjectId(walletId),
+      }))
     );
 
     res.status(200).json({

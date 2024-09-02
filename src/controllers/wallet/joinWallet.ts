@@ -15,7 +15,7 @@ export const joinWallet = async (
   const invitation = await Invitation.findOne({ token });
 
   if (!invitation) {
-    res.status(500).json({
+    res.status(404).json({
       errorType: ErrorType.InvitationNotFound,
     });
 
@@ -23,7 +23,7 @@ export const joinWallet = async (
   }
 
   if (invitation.expires < new Date(Date.now())) {
-    res.status(500).json({
+    res.status(400).json({
       errorType: ErrorType.InvitationExpired,
     });
 
@@ -31,7 +31,7 @@ export const joinWallet = async (
   }
 
   if (invitation.uses >= invitation.maxUses) {
-    res.status(500).json({
+    res.status(400).json({
       errorType: ErrorType.InvitationRunOut,
     });
 
@@ -41,7 +41,7 @@ export const joinWallet = async (
   const wallet = await Wallet.findById(invitation.wallet);
 
   if (!wallet) {
-    res.status(500).send({
+    res.status(404).send({
       errorType: ErrorType.WalletNotFound,
     });
 

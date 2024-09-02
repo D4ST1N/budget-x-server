@@ -20,11 +20,9 @@ export const updateExpense = async (
     );
 
     if (!updatedExpense) {
-      res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.ExpenseNotFound,
       });
-
-      return;
     }
 
     res.status(200).json({

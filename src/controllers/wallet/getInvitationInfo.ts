@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import Invitation from "../../models/Invitation";
 import Wallet from "../../models/Wallet";
-import { client } from "../../routes/auth";
+import { stytchClient } from "../../routes/auth";
 import { ErrorType } from "../../types/ErrorType";
 import { ErrorResponse, GetInvitationLinkResponse } from "../../types/Response";
 
@@ -14,7 +14,7 @@ export const getInvitationInfo = async (
   const invitation = await Invitation.findOne({ token });
 
   if (!invitation) {
-    res.status(500).json({
+    res.status(404).json({
       errorType: ErrorType.InvitationNotFound,
     });
 
@@ -24,14 +24,14 @@ export const getInvitationInfo = async (
   const wallet = await Wallet.findById(invitation.wallet);
 
   if (!wallet) {
-    res.status(500).send({
+    res.status(404).send({
       errorType: ErrorType.WalletNotFound,
     });
 
     return;
   }
 
-  const { results } = await client.users.search({
+  const { results } = await stytchClient.users.search({
     query: {
       operator: "AND",
       operands: [
@@ -45,7 +45,7 @@ export const getInvitationInfo = async (
   const [creator] = results;
 
   if (!creator) {
-    res.status(500).json({
+    res.status(404).json({
       errorType: ErrorType.UserNotFound,
     });
 

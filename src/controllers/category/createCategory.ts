@@ -10,7 +10,8 @@ export const createCategory = async (
   req: Request,
   res: Response<CreateCategoryResponse | ErrorResponse>
 ) => {
-  const { name, parentCategory, isIncomeCategory }: CreateCategoryDTO = req.body;
+  const { name, parentCategory, isIncomeCategory }: CreateCategoryDTO =
+    req.body;
   const { walletId } = req.params;
 
   try {
@@ -21,18 +22,16 @@ export const createCategory = async (
     });
 
     if (existingCategory) {
-      res.status(500).json({
+      return res.status(409).json({
         errorType: ErrorType.CategoryAlreadyExists,
       });
-
-      return;
     }
 
     if (parentCategory) {
       const parentCategoryExists = await Category.findById(parentCategory);
 
       if (!parentCategoryExists) {
-        return res.status(500).json({
+        return res.status(404).json({
           errorType: ErrorType.ParentCategoryNotFound,
         });
       }
@@ -42,7 +41,7 @@ export const createCategory = async (
       });
 
       if (expensesInParentCategory) {
-        return res.status(500).json({
+        return res.status(400).json({
           errorType: ErrorType.ParentCategoryHasExpenses,
         });
       }

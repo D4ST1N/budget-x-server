@@ -9,7 +9,7 @@ export const getUserWallets = async (
   res: Response<GetUserWalletsResponse | ErrorResponse>
 ) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req;
     const wallets = await Wallet.find({ creator: userId });
     const sharedWallets = await Wallet.find({ "allowedUsers.userId": userId });
 

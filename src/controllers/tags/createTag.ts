@@ -19,11 +19,9 @@ export const createTag = async (
     });
 
     if (existingTag) {
-      res.status(500).json({
+      return res.status(409).json({
         errorType: ErrorType.TagAlreadyExists,
       });
-
-      return;
     }
 
     const newTag = new Tag({

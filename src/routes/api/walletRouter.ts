@@ -8,6 +8,7 @@ import {
 } from "../../controllers/category";
 import {
   createExpense,
+  createExpensesBulk,
   deleteExpense,
   deleteExpensesBulk,
   getExpenses,
@@ -42,11 +43,14 @@ import {
   checkWalletData,
   checkWalletId,
 } from "../../middlewares";
+import { authenticateUser } from "../../middlewares/auth";
 import { AccessLevel } from "../../models/Wallet";
 
 const walletRouter = express.Router();
 
-walletRouter.get("/by-user/:userId", checkUserId, getUserWallets);
+walletRouter.use(authenticateUser);
+
+walletRouter.get("/", getUserWallets);
 
 walletRouter.post("/", checkWalletData, createWallet);
 
@@ -193,6 +197,13 @@ walletRouter.post(
   checkWalletId,
   checkWalletAccess([AccessLevel.CreateExpense]),
   createExpense
+);
+
+walletRouter.post(
+  "/:walletId/expense/bulk",
+  checkWalletId,
+  checkWalletAccess([AccessLevel.CreateExpense]),
+  createExpensesBulk
 );
 
 walletRouter.patch(

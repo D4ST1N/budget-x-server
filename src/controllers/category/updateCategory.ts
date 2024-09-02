@@ -9,7 +9,7 @@ export const updateCategory = async (
   req: Request,
   res: Response<UpdateCategoryResponse | ErrorResponse>
 ) => {
-  const { categoryId } = req.params;
+  const { categoryId, walletId } = req.params;
   const {
     name,
     parentCategory: parentCategoryId,
@@ -17,11 +17,23 @@ export const updateCategory = async (
   }: CreateCategoryDTO = req.body;
 
   try {
+    const existingCategory = await Category.findOne({
+      name,
+      walletId,
+      parentCategory: parentCategoryId || null,
+    });
+
+    if (existingCategory) {
+      return res.status(409).json({
+        errorType: ErrorType.CategoryAlreadyExists,
+      });
+    }
+
     if (parentCategoryId) {
       const parentCategory = await Category.findById(parentCategoryId);
 
       if (!parentCategory) {
-        return res.status(500).json({
+        return res.status(404).json({
           errorType: ErrorType.ParentCategoryNotFound,
         });
       }
@@ -31,7 +43,7 @@ export const updateCategory = async (
       });
 
       if (expensesInParentCategory) {
-        return res.status(500).json({
+        return res.status(400).json({
           errorType: ErrorType.ParentCategoryHasExpenses,
         });
       }
@@ -44,7 +56,7 @@ export const updateCategory = async (
     );
 
     if (!category) {
-      return res.status(500).json({
+      return res.status(404).json({
         errorType: ErrorType.CategoryNotFound,
       });
     }

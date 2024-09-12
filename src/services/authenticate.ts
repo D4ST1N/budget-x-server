@@ -8,7 +8,7 @@ export async function authenticate(req: Request): Promise<User | ErrorType> {
   const sessionToken = req.cookies.session_token;
 
   if (!sessionToken) {
-    return ErrorType.NoTokenProvided;
+    return ErrorType.TokenNotProvided;
   }
 
   const session = await stytchClient.sessions.authenticate({
@@ -16,7 +16,7 @@ export async function authenticate(req: Request): Promise<User | ErrorType> {
   });
 
   if (!session) {
-    return ErrorType.InvalidToken;
+    return ErrorType.TokenIsInvalid;
   }
 
   const user = session.user;

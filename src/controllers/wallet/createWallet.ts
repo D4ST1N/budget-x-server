@@ -16,7 +16,7 @@ export const createWallet = async (
   });
 
   if (existedWallet) {
-    res.status(400).json({
+    res.status(409).json({
       errorType: ErrorType.WalletExists,
     });
 

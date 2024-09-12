@@ -31,6 +31,32 @@ app.get("/", (req, res) => {
   res.send("Hello, TypeScript with Express!");
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on ${port} port`);
-});
+let server: ReturnType<typeof app.listen> | null = null;
+
+export const startServer = () => {
+  return new Promise<void>((resolve) => {
+    server = app.listen(port, () => {
+      console.log(`Server is running on ${port} port`);
+      resolve();
+    });
+  });
+};
+
+export const stopServer = () => {
+  return new Promise<void>((resolve) => {
+    if (server) {
+      server.close(() => {
+        console.log("Server stopped");
+        resolve();
+      });
+    } else {
+      resolve();
+    }
+  });
+};
+
+if (require.main === module) {
+  startServer();
+}
+
+export { app, server };

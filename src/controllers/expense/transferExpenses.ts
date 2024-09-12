@@ -37,7 +37,7 @@ export const transferExpenses = async (
 
       if (existingCategory) {
         return res.status(409).json({
-          errorType: ErrorType.CategoryAlreadyExists,
+          errorType: ErrorType.CategoryExists,
         });
       }
 

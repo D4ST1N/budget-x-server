@@ -40,8 +40,12 @@ import {
   checkInvitationToken,
   checkUserId,
   checkWalletAccess,
+  checkWalletCreator,
+  checkWalletCreatorForUpdate,
   checkWalletData,
   checkWalletId,
+  checkWalletName,
+  checkWalletNameForUpdate,
 } from "../../middlewares";
 import { authenticateUser } from "../../middlewares/auth";
 import { AccessLevel } from "../../models/Wallet";
@@ -52,11 +56,19 @@ walletRouter.use(authenticateUser);
 
 walletRouter.get("/", getUserWallets);
 
-walletRouter.post("/", checkWalletData, createWallet);
+walletRouter.post(
+  "/",
+  checkWalletData,
+  checkWalletName,
+  checkWalletCreator,
+  createWallet
+);
 
 walletRouter.patch(
   "/:walletId",
   checkWalletData,
+  checkWalletNameForUpdate,
+  checkWalletCreatorForUpdate,
   checkWalletId,
   checkWalletAccess([AccessLevel.Update]),
   updateWallet

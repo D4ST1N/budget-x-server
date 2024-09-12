@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import Wallet, { AccessLevel, IWallet } from "../models/Wallet";
 import { ErrorType } from "../types/ErrorType";
+import mongoose from "mongoose";
 
 export const checkUserId = (
   req: Request,
@@ -11,13 +12,13 @@ export const checkUserId = (
   const { userId } = req.params;
 
   if (!userId) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       errorType: ErrorType.UserIdNotProvided,
     });
-  } else {
-    next();
   }
+
+  next();
 };
 
 export const checkBodyUserId = (
@@ -28,13 +29,13 @@ export const checkBodyUserId = (
   const { userId } = req.body;
 
   if (!userId) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       errorType: ErrorType.UserIdNotProvided,
     });
-  } else {
-    next();
   }
+
+  next();
 };
 
 export const checkWalletId = (
@@ -45,13 +46,86 @@ export const checkWalletId = (
   const { walletId } = req.params;
 
   if (!walletId) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       errorType: ErrorType.WalletIdNotProvided,
     });
-  } else {
-    next();
   }
+
+  if (!mongoose.Types.ObjectId.isValid(walletId)) {
+    return res.status(400).json({
+      success: false,
+      errorType: ErrorType.WalletIdIsInvalid,
+    });
+  }
+
+  next();
+};
+
+export const checkWalletName = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const walletData = req.body;
+
+  if (!walletData.name) {
+    return res.status(400).json({
+      errorType: ErrorType.WalletNameNotProvided,
+    });
+  }
+
+  if (typeof walletData.name !== "string") {
+    return res.status(400).json({
+      errorType: ErrorType.WalletNameIsInvalid,
+    });
+  }
+
+  next();
+};
+
+export const checkWalletNameForUpdate = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const walletData = req.body;
+
+  if (walletData.name === undefined) {
+    return next();
+  }
+
+  return checkWalletName(req, res, next);
+};
+
+export const checkWalletCreator = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const walletData = req.body;
+
+  if (!walletData.creator) {
+    return res.status(400).json({
+      errorType: ErrorType.CreatorIdNotProvided,
+    });
+  }
+
+  next();
+};
+
+export const checkWalletCreatorForUpdate = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const walletData = req.body;
+
+  if (walletData.creator === undefined) {
+    return next();
+  }
+
+  return checkWalletCreator(req, res, next);
 };
 
 export const checkWalletData = (
@@ -62,13 +136,13 @@ export const checkWalletData = (
   const walletData = req.body;
 
   if (!walletData) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
-      errorType: ErrorType.NoWalletData,
+      errorType: ErrorType.WalletDataNotProvided,
     });
-  } else {
-    next();
   }
+
+  next();
 };
 
 export const checkInvitationToken = (
@@ -79,13 +153,13 @@ export const checkInvitationToken = (
   const { token } = req.params;
 
   if (!token) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       errorType: ErrorType.InvitationTokenNotProvided,
     });
-  } else {
-    next();
   }
+
+  next();
 };
 
 export const checkUserAccess = async (
@@ -109,13 +183,13 @@ export const checkUserAccess = async (
     wallet.creator !== userId &&
     !wallet.allowedUsers.some((user) => user.userId !== userId)
   ) {
-    res.status(403).json({
+    return res.status(403).json({
       success: false,
       errorType: ErrorType.AccessDenied,
     });
-  } else {
-    next();
   }
+
+  next();
 };
 
 export const checkWalletAccess = (requiredAccessLevel: AccessLevel[]) => {
@@ -125,15 +199,20 @@ export const checkWalletAccess = (requiredAccessLevel: AccessLevel[]) => {
       const { walletId } = req.params;
 
       if (!userId) {
-        res.status(403).json({
+        return res.status(403).json({
           success: false,
           errorType: ErrorType.UserIdNotProvided,
         });
-
-        return;
       }
 
       const wallet = (await Wallet.findById(walletId)) as IWallet;
+
+      if (!wallet) {
+        return res.status(404).json({
+          success: false,
+          errorType: ErrorType.WalletNotFound,
+        });
+      }
 
       let userAccess;
 

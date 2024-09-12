@@ -23,7 +23,7 @@ authRouter.get("/", async (req: Request, res: Response) => {
   if (!token && !tokenType) {
     return res.status(400).json({
       success: false,
-      errorType: ErrorType.NoTokenProvided,
+      errorType: ErrorType.TokenNotProvided,
     });
   }
 
@@ -65,7 +65,7 @@ authRouter.get("/", async (req: Request, res: Response) => {
 
 authRouter.get("/user", async (req, res) => {
   if (!req.cookies) {
-    return res.status(401).json({ ErrorType: ErrorType.NoTokenProvided });
+    return res.status(401).json({ ErrorType: ErrorType.TokenNotProvided });
   }
 
   try {

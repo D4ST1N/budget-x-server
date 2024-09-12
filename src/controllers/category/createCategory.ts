@@ -23,7 +23,7 @@ export const createCategory = async (
 
     if (existingCategory) {
       return res.status(409).json({
-        errorType: ErrorType.CategoryAlreadyExists,
+        errorType: ErrorType.CategoryExists,
       });
     }
 

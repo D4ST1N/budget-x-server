@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import Wallet from "../../models/Wallet";
+import Wallet, { IWallet } from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
 import { ErrorResponse, UpdateWalletResponse } from "../../types/Response";
 import { WalletData } from "../../types/Wallet";
@@ -12,14 +12,12 @@ export const updateWallet = async (
   const walletData: WalletData = req.body;
 
   const { walletId } = req.params;
-  let wallet = await Wallet.findOne({ _id: walletId });
+  let wallet = (await Wallet.findOne({ _id: walletId })) as IWallet;
 
-  if (!wallet) {
-    res.status(404).json({
-      errorType: ErrorType.WalletNotFound,
+  if (walletData.creator && wallet.creator !== walletData.creator) {
+    return res.status(400).json({
+      errorType: ErrorType.WalletCreatorIsImmutable,
     });
-
-    return;
   }
 
   wallet = Object.assign(wallet, walletData);

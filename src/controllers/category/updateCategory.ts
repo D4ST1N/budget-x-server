@@ -68,8 +68,8 @@ export const updateCategory = async (
       category,
     });
   } catch (error) {
-    res.status(500).send({
-      errorType: ErrorType.CategoryEditError,
+    res.status(500).json({
+      errorType: ErrorType.CategoryUpdateError,
       error,
     });
   }

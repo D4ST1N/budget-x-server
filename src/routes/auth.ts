@@ -7,6 +7,7 @@ import { authenticate } from "../services/authenticate";
 import { ErrorType } from "../types/ErrorType";
 
 import "dotenv/config";
+import { findUsers } from "../helpers/findUsers";
 
 const week = 60 * 24 * 7;
 
@@ -93,12 +94,11 @@ authRouter.get("/logout", async (req, res) => {
 
 authRouter.get("/users", async (req, res) => {
   try {
-    const response = await stytchClient.users.search({
-      query: { operator: "OR", operands: [] },
-    });
+    const results = await findUsers("OR");
+
     res.status(200).json({
       success: true,
-      user: response.results,
+      user: results,
     });
   } catch (error) {
     res.status(400).json({

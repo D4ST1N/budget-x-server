@@ -11,25 +11,30 @@ export const updateWalletUserAccess = async (
   const { walletId, userId } = req.params;
   const accessLevels = req.body;
 
-  const wallet = (await Wallet.findOne({ _id: walletId })) as IWallet;
+  try {
+    const wallet = (await Wallet.findOne({ _id: walletId })) as IWallet;
 
-  if (!wallet.allowedUsers.find((user) => user.userId === userId)) {
-    res.status(404).json({
-      errorType: ErrorType.UserNotInWallet,
+    if (!wallet.allowedUsers.find((user) => user.userId === userId)) {
+      return res.status(404).json({
+        errorType: ErrorType.UserNotInWallet,
+      });
+    }
+
+    const user = wallet.allowedUsers.find(
+      (allowedUser) => allowedUser.userId === userId
+    ) as IAllowedUser;
+
+    user.accessLevels = accessLevels;
+
+    await wallet.save();
+
+    res.status(200).json({
+      success: true,
     });
-
-    return;
+  } catch (error) {
+    res.status(500).json({
+      errorType: ErrorType.WalletUserUpdateError,
+      error,
+    });
   }
-
-  const user = wallet.allowedUsers.find(
-    (allowedUser) => allowedUser.userId === userId
-  ) as IAllowedUser;
-
-  user.accessLevels = accessLevels;
-
-  await wallet.save();
-
-  res.status(200).json({
-    success: true,
-  });
 };

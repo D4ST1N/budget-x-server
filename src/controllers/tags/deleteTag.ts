@@ -24,7 +24,7 @@ export const deleteTag = async (
     });
   } catch (error) {
     res.status(500).json({
-      errorType: ErrorType.TagDeleteError,
+      errorType: ErrorType.TagDeletionError,
       error,
     });
   }

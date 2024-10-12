@@ -36,8 +36,8 @@ import {
   updateWalletUserAccess,
 } from "../../controllers/wallet";
 import {
-  checkBodyUserId,
   checkInvitationToken,
+  checkParentCategoryId,
   checkUserId,
   checkWalletAccess,
   checkWalletCreator,
@@ -46,9 +46,10 @@ import {
   checkWalletId,
   checkWalletName,
   checkWalletNameForUpdate,
+  checkWalletUsers,
 } from "../../middlewares";
 import { authenticateUser } from "../../middlewares/auth";
-import { AccessLevel } from "../../models/Wallet";
+import { AccessLevel } from "../../types/AccessLevel";
 
 const walletRouter = express.Router();
 
@@ -61,6 +62,7 @@ walletRouter.post(
   checkWalletData,
   checkWalletName,
   checkWalletCreator,
+  checkWalletUsers,
   createWallet
 );
 
@@ -90,12 +92,7 @@ walletRouter.post(
 
 walletRouter.get("/join/:token", checkInvitationToken, getInvitationInfo);
 
-walletRouter.post(
-  "/join/:token",
-  checkInvitationToken,
-  checkBodyUserId,
-  joinWallet
-);
+walletRouter.post("/join/:token", checkInvitationToken, joinWallet);
 
 walletRouter.get(
   "/:walletId/users",
@@ -137,6 +134,7 @@ walletRouter.get(
 walletRouter.post(
   "/:walletId/category",
   checkWalletId,
+  checkParentCategoryId,
   checkWalletAccess([AccessLevel.CreateCategory]),
   createCategory
 );
@@ -144,6 +142,7 @@ walletRouter.post(
 walletRouter.patch(
   "/:walletId/category/:categoryId",
   checkWalletId,
+  checkParentCategoryId,
   checkWalletAccess([AccessLevel.UpdateCategory]),
   updateCategory
 );

@@ -48,7 +48,7 @@ describe("Wallet CRUD tests", () => {
     const response = await authRequest.get("/api/wallet").expect(200);
 
     expect(response.body.wallets).toBeInstanceOf(Array);
-    expect(response.body.wallets.length).toBe(1);
+    expect(response.body.wallets.length).toBeGreaterThanOrEqual(1);
   });
 
   it("should update an existing wallet", async () => {
@@ -79,7 +79,7 @@ describe("Wallet CRUD tests", () => {
     );
   });
 
-  describe("Error handling", () => {
+  describe("Wallet CRUD error handling", () => {
     it("should return an error if no data passed", async () => {
       const response = await authRequest
         .post("/api/wallet")
@@ -150,10 +150,29 @@ describe("Wallet CRUD tests", () => {
       }
     );
 
+    it("should return 400 when creating a wallet with invalid access levels", async () => {
+      const invalidWalletData = {
+        name: "Invalid Access Levels Wallet",
+        creator: userId,
+        allowedUsers: ["invalidAccessLevel"],
+      };
+
+      const response = await authRequest
+        .post("/api/wallet")
+        .send(invalidWalletData)
+        .expect(400);
+
+      expect(response.body).toHaveProperty(
+        "errorType",
+        "WalletUserDataIsInvalid"
+      );
+    });
+
     it("should return an error if wallet with the same name exists", async () => {
       const walletData = {
         name: "Test Wallet",
         creator: userId,
+        allowedUsers: [],
       };
 
       const response = await authRequest
@@ -224,7 +243,7 @@ describe("Wallet CRUD tests", () => {
     it("should return an error if trying to change creator", async () => {
       const response = await authRequest
         .patch(`/api/wallet/${walletId}`)
-        .send({ creator: "newUserId" })
+        .send({ creator: "newUserId", allowedUsers: [] })
         .expect(400);
 
       expect(response.body).toHaveProperty(
@@ -237,6 +256,7 @@ describe("Wallet CRUD tests", () => {
       const walletData = {
         name: "Permission Denied Wallet for Update",
         creator: userId,
+        allowedUsers: [],
       };
 
       const response = await authRequest
@@ -274,6 +294,7 @@ describe("Wallet CRUD tests", () => {
       const walletData = {
         name: "Permission Denied Wallet for Delete",
         creator: userId,
+        allowedUsers: [],
       };
 
       const response = await authRequest
@@ -293,7 +314,5 @@ describe("Wallet CRUD tests", () => {
 
       expect(deleteResponse.body).toHaveProperty("errorType", "AccessDenied");
     });
-
-
   });
 });

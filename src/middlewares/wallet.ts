@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-
-import Wallet, { AccessLevel, IWallet } from "../models/Wallet";
-import { ErrorType } from "../types/ErrorType";
 import mongoose from "mongoose";
+
+import Wallet, { IAllowedUser, IWallet } from "../models/Wallet";
+import { AccessLevel } from "../types/AccessLevel";
+import { ErrorType } from "../types/ErrorType";
 
 export const checkUserId = (
   req: Request,
@@ -61,6 +62,50 @@ export const checkWalletId = (
 
   next();
 };
+
+export const checkWalletUsers = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const walletData = req.body;
+
+  if (!Array.isArray(walletData.allowedUsers)) {
+    return res.status(400).json({
+      errorType: ErrorType.WalletUserDataIsInvalid,
+    });
+  }
+
+  const users: unknown[] = walletData.allowedUsers;
+
+  if (!users.every((user) => isValidAllowedUser(user))) {
+    return res.status(400).json({
+      errorType: ErrorType.WalletUserDataIsInvalid,
+    });
+  }
+
+  next();
+};
+
+function isValidAllowedUser(user: unknown): user is IAllowedUser {
+  if (typeof user !== "object" || user === null) {
+    return false;
+  }
+
+  const { userId, accessLevels } = user as IAllowedUser;
+
+  if (typeof userId !== "string" || userId.trim() === "") {
+    return false;
+  }
+
+  if (!Array.isArray(accessLevels) || accessLevels.length === 0) {
+    return false;
+  }
+
+  return accessLevels.every((level) =>
+    Object.values(AccessLevel).includes(level)
+  );
+}
 
 export const checkWalletName = (
   req: Request,
@@ -156,6 +201,23 @@ export const checkInvitationToken = (
     return res.status(400).json({
       success: false,
       errorType: ErrorType.InvitationTokenNotProvided,
+    });
+  }
+
+  next();
+};
+
+export const checkParentCategoryId = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const { parentCategory } = req.body;
+
+  if (parentCategory && !mongoose.Types.ObjectId.isValid(parentCategory)) {
+    return res.status(400).json({
+      success: false,
+      errorType: ErrorType.ParentCategoryIdIsInvalid,
     });
   }
 

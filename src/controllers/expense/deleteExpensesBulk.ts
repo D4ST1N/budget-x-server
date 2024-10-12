@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 
 import Expense from "../../models/Expense";
 import { ErrorType } from "../../types/ErrorType";
-import { DeleteExpensesBulkResponse, ErrorResponse } from "../../types/Response";
+import {
+  DeleteExpensesBulkResponse,
+  ErrorResponse,
+} from "../../types/Response";
 
 export const deleteExpensesBulk = async (
   req: Request,
@@ -11,7 +14,7 @@ export const deleteExpensesBulk = async (
   const { categoryId } = req.params;
 
   try {
-    const result = await Expense.deleteMany({ category: categoryId });
+    const result = await Expense.deleteMany({ categoryId });
 
     if (result.deletedCount === 0) {
       return res.status(404).json({

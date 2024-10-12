@@ -32,8 +32,8 @@ export const deleteCategory = async (
       success: true,
     });
   } catch (error) {
-    res.status(500).send({
-      errorType: ErrorType.CategoryDeleteError,
+    res.status(500).json({
+      errorType: ErrorType.CategoryDeletionError,
       error,
     });
   }

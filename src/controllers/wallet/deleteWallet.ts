@@ -16,7 +16,7 @@ export const deleteWallet = async (
       success: true,
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       errorType: ErrorType.WalletDeletionError,
       error,
     });

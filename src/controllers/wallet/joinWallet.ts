@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import Invitation from "../../models/Invitation";
-import Wallet from "../../models/Wallet";
+import Wallet, { IWallet } from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
 import { ErrorResponse, JoinWallerResponse } from "../../types/Response";
 
@@ -10,50 +10,56 @@ export const joinWallet = async (
   res: Response<JoinWallerResponse | ErrorResponse>
 ) => {
   const { token } = req.params;
-  const { userId } = req.body;
+  const { userId } = req;
 
   const invitation = await Invitation.findOne({ token });
 
   if (!invitation) {
-    res.status(404).json({
+    return res.status(404).json({
       errorType: ErrorType.InvitationNotFound,
     });
-
-    return;
   }
 
   if (invitation.expires < new Date(Date.now())) {
-    res.status(400).json({
+    return res.status(400).json({
       errorType: ErrorType.InvitationExpired,
     });
-
-    return;
   }
 
   if (invitation.uses >= invitation.maxUses) {
-    res.status(400).json({
+    return res.status(400).json({
       errorType: ErrorType.InvitationRunOut,
     });
-
-    return;
   }
 
-  const wallet = await Wallet.findById(invitation.wallet);
+  const wallet = (await Wallet.findById(invitation.wallet)) as IWallet;
 
   if (!wallet) {
-    res.status(404).send({
+    return res.status(404).json({
       errorType: ErrorType.WalletNotFound,
     });
-
-    return;
   }
 
-  if (!wallet.allowedUsers.includes(userId) && userId !== wallet.creator) {
+  if (userId === wallet.creator) {
+    return res.status(400).json({
+      errorType: ErrorType.CannotInviteCreator,
+    });
+  }
+
+  const existedUser = wallet.allowedUsers.find(
+    (user) => user.userId === userId
+  );
+
+  if (!existedUser) {
     wallet.allowedUsers.push({
-      userId,
+      userId: userId!,
       accessLevels: invitation.accessLevels,
     });
     invitation.uses += 1;
+  } else {
+    return res.status(400).json({
+      errorType: ErrorType.UserAlreadyInWallet,
+    });
   }
 
   await invitation.save();

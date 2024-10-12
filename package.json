@@ -6,7 +6,7 @@
     "build": "ts-node src/index.ts",
     "start": "nodemon src/index.ts",
     "prettify": "npx prettier . --write",
-    "test": "npx jest --config jest.config.ts --coverage --forceExit"
+    "test": "npx jest --config jest.config.ts --forceExit"
   },
   "keywords": [],
   "author": "",

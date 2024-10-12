@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import Wallet from "../../models/Wallet";
+import Wallet, { IWallet } from "../../models/Wallet";
 import { ErrorType } from "../../types/ErrorType";
 import { DeleteWalletUserResponse, ErrorResponse } from "../../types/Response";
 
@@ -10,15 +10,7 @@ export const deleteWalletUser = async (
 ) => {
   try {
     const { walletId, userId } = req.params;
-    const wallet = await Wallet.findOne({ _id: walletId });
-
-    if (!wallet) {
-      res.status(404).json({
-        errorType: ErrorType.WalletNotFound,
-      });
-
-      return;
-    }
+    const wallet = (await Wallet.findOne({ _id: walletId })) as IWallet;
 
     wallet.allowedUsers = wallet.allowedUsers.filter(
       (allowedUser) => allowedUser.userId !== userId
@@ -30,7 +22,7 @@ export const deleteWalletUser = async (
       success: true,
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       errorType: ErrorType.WalletUserDeletionError,
       error,
     });

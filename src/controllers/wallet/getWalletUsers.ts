@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
-import Wallet from "../../models/Wallet";
+import { findUsers } from "../../helpers/findUsers";
+import Wallet, { IWallet } from "../../models/Wallet";
 import { stytchClient } from "../../routes/auth";
 import { ErrorType } from "../../types/ErrorType";
 import { ErrorResponse, FetWalletUsersResponse } from "../../types/Response";
@@ -12,29 +13,14 @@ export const getWalletUsers = async (
   const { walletId } = req.params;
 
   try {
-    const wallet = await Wallet.findOne({ _id: walletId });
-
-    if (!wallet) {
-      res.status(404).json({
-        errorType: ErrorType.WalletNotFound,
-      });
-
-      return;
-    }
+    const wallet = (await Wallet.findOne({ _id: walletId })) as IWallet;
 
     const { allowedUsers } = wallet;
 
-    const { results } = await stytchClient.users.search({
-      query: {
-        operator: "OR",
-        operands: [
-          {
-            filter_name: "user_id",
-            filter_value: allowedUsers.map(({ userId }) => userId),
-          },
-        ],
-      },
-    });
+    const results = await findUsers(
+      "OR",
+      allowedUsers.map(({ userId }) => userId)
+    );
 
     const users = results.map(({ name, providers, user_id }) => ({
       name,
@@ -46,7 +32,7 @@ export const getWalletUsers = async (
       users,
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       errorType: ErrorType.UserFetchError,
       error,
     });

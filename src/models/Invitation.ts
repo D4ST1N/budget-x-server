@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-import { AccessLevel } from "./Wallet";
+import { AccessLevel } from "../types/AccessLevel";
 
 export interface IInvitation extends Document {
   wallet: mongoose.Schema.Types.ObjectId;

@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 
 import Invitation from "../../models/Invitation";
-import { AccessLevel } from "../../models/Wallet";
+import { AccessLevel } from "../../types/AccessLevel";
 import { ErrorType } from "../../types/ErrorType";
 import {
   CreateWalletInvitationResponse,
@@ -38,7 +38,7 @@ export const createWalletInvitation = async (
       token,
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       errorType: ErrorType.InvitationCreationError,
       error,
     });

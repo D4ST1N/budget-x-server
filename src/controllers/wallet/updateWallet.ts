@@ -30,7 +30,7 @@ export const updateWallet = async (
     });
   } catch (error) {
     res.status(500).json({
-      errorType: ErrorType.WalletCreationError,
+      errorType: ErrorType.WalletUpdateError,
       error,
     });
   }
